@@ -6,4 +6,4 @@ services:
 before_install:
 - docker pull bdunne/mock
 script:
-- docker run -it --rm -v ./:/root/working --cap-add=SYS_ADMIN bdunne/mock bash -c "fetch_sources.sh && mock -r /etc/mock/epel-8-x86_64.cfg --buildsrpm --spec ./libssh2.spec --sources=~/rpmbuild/SOURCES/"
+- docker run -it --rm -v $TRAVIS_BUILD_DIR:/root/working --cap-add=SYS_ADMIN bdunne/mock bash -c "fetch_sources.sh && mock -r /etc/mock/epel-8-x86_64.cfg --buildsrpm --spec ./libssh2.spec --sources=~/rpmbuild/SOURCES/"
