@@ -7,6 +7,6 @@ before_install:
 - docker pull bdunne/mock
 - mkdir $TRAVIS_BUILD_DIR/result
 script:
-- docker run -it --rm -v $TRAVIS_BUILD_DIR:/root/working -v $TRAVIS_BUILD_DIR:/var/lib/mock --cap-add=SYS_ADMIN bdunne/mock bash -c "cd /root/working && fetch_sources.sh && mock -r /etc/mock/epel-8-x86_64.cfg --buildsrpm --spec ./libssh2.spec --sources=~/rpmbuild/SOURCES/"
+- docker run -it --rm -v $TRAVIS_BUILD_DIR:/root/working -v $TRAVIS_BUILD_DIR/result:/var/lib/mock --cap-add=SYS_ADMIN bdunne/mock bash -c "cd /root/working && fetch_sources.sh && mock -r /etc/mock/epel-8-x86_64.cfg --buildsrpm --spec ./libssh2.spec --sources=~/rpmbuild/SOURCES/"
 - echo results...
 - ls -al $TRAVIS_BUILD_DIR/result
