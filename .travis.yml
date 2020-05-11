@@ -15,6 +15,4 @@ jobs:
     - ruby -e "require 'aws-sdk-s3'; client = Aws::S3::Client.new(:access_key_id => ENV['aws_access_key'], :secret_access_key => ENV['aws_secret_key'], :region => 'us-east-1', :endpoint => 'https://nyc3.digitaloceanspaces.com'); Dir.glob(File.join(ENV['TRAVIS_BUILD_DIR'], 'result', '**/*.rpm')).each { |file| destination_name = File.join('builds', ENV['TRAVIS_REPO_SLUG'].split('/').last, ENV['TRAVIS_BUILD_NUMBER'], File.basename(file)); File.open(file, 'rb') { |content| client.put_object(:bucket => 'rpm-manageiq-org', :key => destination_name, :body => content, :acl => 'public-read') } }"
   - stage: x86_64
     script:
-    - gem install rest-client
-    - ruby -e "require 'rest-client'; srpm = RestClient.get('https://rpm-manageiq-org.nyc3.digitaloceanspaces.com/?prefix=builds/#{ENV['TRAVIS_REPO_SLUG']}/#{ENV['TRAVIS_BUILD_NUMBER']}').body.match(/.*<Key>(.*)<\/Key>.*/)[1]; RestClient.get(File.join('https://rpm-manageiq-org.nyc3.digitaloceanspaces.com', srpm)); File.write(File.join(ENV['TRAVIS_BUILD_DIR'], srpm.split('/').last))"
-    - docker run -it --rm -v $TRAVIS_BUILD_DIR:/root/working -v $TRAVIS_BUILD_DIR/result:/var/lib/mock -e SRPM=$SRPM --cap-add=SYS_ADMIN bdunne/mock bash -c "cd /root/working && mock -r /etc/mock/epel-8-x86_64.cfg $SRPM"
+    - curl https://raw.githubusercontent.com/bdunne/rpm-build-scripts/master/bin/arch | bash
