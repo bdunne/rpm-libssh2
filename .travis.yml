@@ -15,4 +15,7 @@ jobs:
     - ruby -e "require 'aws-sdk-s3'; client = Aws::S3::Client.new(:access_key_id => ENV['aws_access_key'], :secret_access_key => ENV['aws_secret_key'], :region => 'us-east-1', :endpoint => 'https://nyc3.digitaloceanspaces.com'); Dir.glob(File.join(ENV['TRAVIS_BUILD_DIR'], 'result', '**/*.rpm')).each { |file| destination_name = File.join('builds', ENV['TRAVIS_REPO_SLUG'].split('/').last, ENV['TRAVIS_BUILD_NUMBER'], File.basename(file)); File.open(file, 'rb') { |content| client.put_object(:bucket => 'rpm-manageiq-org', :key => destination_name, :body => content, :acl => 'public-read') } }"
   - stage: x86_64
     script:
-    - echo "hi"
+    - REMOTE_SRPM=$(curl https://rpm.manageiq.org/?prefix=builds/rpm-libssh2/10 |sed -nE "s:.*<Key>(.*)<\/Key>.*:\1:p")
+    - SRPM=$(echo $SRPM | cut -f 4 -d /)
+    - curl https://rpm.manageiq.org/$REMOTE_SRPM -o $TRAVIS_BUILD_DIR/$SRPM
+    - docker run -it --rm -v $TRAVIS_BUILD_DIR:/root/working -v $TRAVIS_BUILD_DIR/result:/var/lib/mock --cap-add=SYS_ADMIN bdunne/mock bash -c "cd /root/working && mock -r /etc/mock/epel-8-x86_64.cfg $SRPM"
