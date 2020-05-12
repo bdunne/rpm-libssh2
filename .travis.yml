@@ -16,7 +16,9 @@ jobs:
   - stage: x86_64
     script:
     - curl https://raw.githubusercontent.com/bdunne/rpm-build-scripts/master/bin/arch | bash
-  - stage: ppc64le
-    arch: ppc64le
-    script:
-    - curl https://raw.githubusercontent.com/bdunne/rpm-build-scripts/master/bin/arch | bash
+  # - stage: ppc64le
+  #   arch: ppc64le
+  #   script:
+  #   - curl https://raw.githubusercontent.com/bdunne/rpm-build-scripts/master/bin/arch | bash
+  - stage: finalize
+    script: curl https://raw.githubusercontent.com/bdunne/rpm-build-scripts/master/bin/finalize_build | bash
